@@ -12,7 +12,8 @@
 # 表示进程可以同时打开的最大句柄数，这个参数直接限制最大并发连接数
 fs.file-max = 999999
 
-# 设置为1，表示允许TIME-WAIT状态的socket重新用于新的TCP连接。对于服务器来说很有意义，因为服务器上总会有大量的TIME-WAIT状态的连接
+# 设置为1，表示允许TIME-WAIT状态的socket重新用于新的TCP连接。  
+# 对于服务器来说很有意义，因为服务器上总会有大量的TIME-WAIT状态的连接
 net.ipv4.tcp_tw_reuse = 1
 
 # 表示当Keep Alive启动时，TCP发送keepalive消息的频率。默认是2h, 将其设置小一些可以更快地清理无效连接
@@ -47,13 +48,12 @@ net.core.wmem_max = 2097152
 # 该参数与性能无关，用于解决TCP的SYN攻击
 net.ipv4.tcp_syncookies = 1
 
-# TCP连接建立阶段，接收SYN请求队列的最大长度，默认为1024， 将其设置大一些可以使Nginx繁忙来不解accept连接时，Linux不会丢失客户端发出的请求
+# TCP连接建立阶段，接收SYN请求队列的最大长度，默认为1024  
+# 将其设置大一些可以使Nginx繁忙来不解accept连接时，Linux不会丢失客户端发出的请求
 net.ipv4.tcp_max_syn_backlog = 1024
 ```
 
 __滑动窗口的大小__ 与 __套接字缓存区__ 会影响并发连接的数量。每个TCP连接都会为了维护TCP滑动窗口而消耗内存，这个窗口会根据服务器的处理速度收缩或扩张。  
-__wmem_max__ 的设置需要平衡 __物理内存的大小__ 以及 __Nginx并发处理的最大连接数量__(由nginx.conf中的worker_processes以及worker_connnections参数决定)。当然如果仅仅为了提高并发量使服务器不出现Out Of Memory问题而去降低滑动窗口的大小，那么并不合适，因为滑动窗口过小会影响大数据量的传输速度，rmem_default、wmem_default、rmem_max、wmem_max 的设置，最好依据业务特性以及实际的硬件成本来综合考虑。
-
-
+__wmem_max__ 的设置需要平衡 __物理内存的大小__ 以及 __Nginx并发处理的最大连接数量__ (由nginx.conf中的worker_processes 以及worker_connnections 参数决定)。当然如果仅仅为了提高并发量使服务器不出现Out Of Memory 问题而去降低滑动窗口的大小，那么并不合适，因为滑动窗口过小会影响大数据量的传输速度，rmem_default、wmem_default、rmem_max、wmem_max 的设置，最好依据业务特性以及实际的硬件成本来综合考虑。
 
 
